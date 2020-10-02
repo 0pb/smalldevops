@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec python3.7 -m SmallDevops "python3.7 script.py" -dir=/path/to/script/ -output=/path/website_folder/
