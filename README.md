@@ -1,17 +1,18 @@
 
 # SmallDevops
 
-Small continuous developpement for python (currently for unittest only).
-It consist in a python module/script that get information from your script and of a website that display those informations.
+Small local/offline continuous developpement for python (currently for unittest only) with no dependency.
+It consist in a python module and a webpage.
 
 ## **Requirements**
 
-- Linux
-- Python3 (only the module require it, you can still launch your own script in Python2.7 if you wish)
+- Linux.
+- Python3 (only the module require it, you can still launch your own script in Python2.7 if you wish).
+- No server (flask, django etc) is required, the website is a simple html file (work offline and on any local computer without additional setup).
 
 ---
 
-## **How it looks like** 
+## **How the webpage looks like** 
 
 Commit with 3 failures in test : 
 ![website](example/smalldevops.png)
@@ -28,44 +29,73 @@ Right column
 
 ---
 
+## **How it work**
+
+The python module will launch the script you pass as argument. Then it will recover informations like the time it took to run your script, the amount of test found by unittest, last git information, etc. and put it in a dictionnary.
+
+Finally It append this dictionnary containing the informations of the last run inside a javascript file. This javascript file is used by the webpage as a json object to display the graph. 
+
+A javascript file is needed as you cannot load .json file in a local static webpage due to content policy.
+
 ## **How to use it**
 
-- `pip install SmallDevops`
-- `git init` in the folder you want (or you may want to use an already existing project)
+- `pip install SmallDevops` install the SmallDevops package. You can also directly use this project by cloning it and then using `python -m SmallDevops`.
+- `git init` in the folder you want (or you may want to use an already existing project).
 
-### Basic : 
+Then : 
 
-- `python -m SmallDevops create_website` will create a "file.html" in the current folder
-- `python -m SmallDevops "python3.6 script.py"` will execute "python3.6 script.py" and create a file "output.js" in the current folder
+#### Basic : 
 
-Just open the file.html in your browser and voila.
+- `python -m SmallDevops create_website` create "file.html" in the current folder.
+- `python -m SmallDevops "python3.6 script.py"` execute "python3.6 script.py" and create a file "output.js" in the current folder.
 
-This command `python -m SmallDevops "python3.6 script.py"` need to be run every time you commit, which mean you either need to type the command each time or you can use a post-commit hooks (like this [one](example/post-commit)) to automatically execute the script.
+You can now open file.html in your browser and voila. The page load the output.js file and display data.
 
-### Fully automatic : 
+Because the script only get the last commit data, the command `python -m SmallDevops "python3.6 script.py"` need to be run every time you commit.
 
-- `python -m SmallDevops create_website /path/where/you/want/the/website` will create a "file.html" in the folder indicated
-- get the folder where you want to execute a script (let's say : "/path/to/script")
-- create a hook post-commit or post-receive (if you put it on a server) in your .git/hooks folder with this command : `exec python -m SmallDevops "python script.py" -dir=/path/to/script -output=/path/where/you/want/the/website`
+It mean you either need to type the command each time you commit or you can use a post-commit hooks (like this [one](example/post-commit)) to automatically execute the script for every commit.
+
+You can also ignore committing and simply run the script, however you will miss informations.
+You cannot use this module without a git project (except if you do your own test class, shown later below). However you can git init, then git commit once and never bother committing again afterward.
+
+#### Fully automatic : 
+
+- `python -m SmallDevops create_website /path/where/you/want/the/website` create a "file.html" in the path given as argument.
+- create a hook post-commit or post-receive (if you put it on a git server) in your .git/hooks folder with this command : `exec python -m SmallDevops "python script.py" -dir=/path/to/script -output=/path/where/you/want/the/website`
 
 Now every you commit the script will run automatically and update the data accordingly.
 
-### If you want to execute your script in python2.7 : 
+#### If you want to execute your script in python2.7 :
 
-Add `-template=unittest_timing_git_python27`.
+Add `-template=unittest_timing_git_python27` (ex : `python -m SmallDevops "python2.7 script.py" -template=unittest_timing_git_python27`.
+
+If you want to use another version of python, either change your current python version (which the module detect with sys.version), or create your own test class and change the get_discover_command() function which run unittest.
 
 ---
 
-## **How to add your own test class from the template**
+## **How to add your own test class**
 
-First, what are those test class : It is the class used by the script in order to recover the data from your script.
+Those test class are used by the SmallDevops as a way to get an output from a script, then process that output and put it in a directory.
 
-Here is an example for [unittest](SmallDevops/template_class/unittest_timing_git.py) and here is the [base template](SmallDevops/template_class/base_class_test.py)
+Here is an example for [unittest](SmallDevops/template_class/unittest_timing_git.py) and here is the [base template](SmallDevops/template_class/base_class_test.py).
 
-You can get the data however you want. Let's say you wish to use a particular program to time your function instead of the \time I use.
-You just need to copy the example and modify the function that execute the \time function, as well as the function that process the data recovered.
+The unittest_timing_git test class get the output, then process it trought different function. As an example if you wish to get the user time instead of the real time used by the module, you can copy unittest_timing_git.py, then change the get_execution_time() function like so :
 
-Once you do that, you can either re-build the package, or you can use the `-template` and `-template_path option` to specify which test class you want to use.
+```
+
+def get_execution_time(self, command : list, true_if_print_output : bool) -> float:
+    str_command = shlex.split('\\time -f "%E|%U|%S" ') + command
+    output_from_execution = execute_command_in_cmd(str_command)[0]
+    if true_if_print_output:
+        print(output_from_execution)
+    timing = str(output_from_execution).split("\n")
+        return float(timing[-2].split("|")[1])
+                                           ^ Where the change is done
+```
+
+Once you do that and save the modified file as my_own_test_class.py, you can either re-build the package, or you can use the `-template` and `-template_path option` to specify which test class you want to use.
+
+In the second case, use this command from now on : `python -m SmallDevops "python2.7 script.py" -template=my_own_test_class -template=/path/where/you/put/your/test/class`
 
 --- 
 
@@ -90,7 +120,7 @@ list argument possible =
             "hello" to the console will then print "hello
                                                     json created
                                                     devop script done"
-    ex: -show
+        ex: -show
 
     "-output" : create the output file in the corresponding folder
                 if the output is a path (/absolute/path/), then a output.js will be created at that
@@ -119,16 +149,15 @@ list argument possible =
 
 ## **Features**
 
-- Lots of options for customisation.
-- Great looking graph and informations.
+- Lots of options for customisations.
+- Interactive graph (click on a point and get its informations).
 - Self-sufficient, doesn't require node.js or any specific python library.
-- Doesn't modify your project in any way, doesn't require special file or line to be added to your project.
-- graph showing amount of test failed on the entire lifetime of a project.
-- graph showing the time it take to execute your program on the entire lifetime of a project.
-- Can be used to simply get json file from a set of tests.
+- Doesn't modify your project in any way, doesn't require any special file or line to be added in your project.
+- You can put the graph as fullscreen if you click on the arroys icon in the right column.
 - Can be easily modified to suit a server and an ajax request.
-- You can easily add your own "test class" (let's say you use something else than unittest or pytest, you can easily create a class template for your specific test class).
+- You can easily add your own "test class" (let's say you use something else than unittest or pytest, you can easily create a test class for your specific test class).
 - Quick (1000+ entry data doesn't slow down the site), js file is around 1Mb~ for 550 entry (=550 commits).
+
 
 ---
 
@@ -137,6 +166,7 @@ list argument possible =
 - Work on latest Firefox, didn't test on chrome, opera or IE.
 - Work on ubuntu, didn't test on other distro or windows. The biggest problem that could arise would be the time function and the stdout not being recognized.
 - Only support unittest by default for now.
+- **Doesn't get every data from git** : If you decide to use it in a project with lot of commit already, it *won't* get the past commit data and information. It would require the script to run throught every commit in the right order, run the test and record those data. I might add that feature in the futur but for now it is not possible.
 
 ---
 
