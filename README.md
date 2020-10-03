@@ -73,7 +73,7 @@ Now every you commit the script will run automatically and update the data accor
 
 ### If you want to execute your script with pytest :
 
-Add `-template=pytest_timing_git` (ex : `python -m SmallDevops "python2.7 script.py"`).
+Add `-template=pytest_timing_git` (ex : `python -m SmallDevops "python3.6 script.py" -template=pytest_timing_git`).
 
 ### If you want to execute your script in python2.7 :
 
