@@ -49,26 +49,12 @@ class Unittest_data(class_template.top_class_test):
         return last_log.split("|")
 
     def true_if_error_in_tests(self, list_stats : list) -> bool:
-        """
-            ['Ran 15 tests in 0.004s', 'FAILED (failure=3)']
-            => bool
-            false
-
-            ['Ran 15 tests in 0.004s', 'FAILED (errors=3)']
-            => bool
-            true
-        """
         for line in list_stats:
             if "error" in line:
                 return True
         return False
 
     def get_timing_test(self, list_stats : list) -> float:
-        """
-            ['2 failed, 3 passed, 1 error', '0.09s']
-            => float
-            0.004
-        """
         try:
             time = list_stats[-1]
             time = float(time[:-1])
@@ -135,20 +121,6 @@ class Unittest_data(class_template.top_class_test):
         return list_string
 
     def get_list_success_test(self, list_test_name : list) -> list:
-        """
-            "
-            test_sample1 (test.test_mini.ContainTest) ... ok\n
-            test_sample2 (test.test_mini.ContainTest) ... ok\n
-            test_sample3 (test.test_mini.ContainTest) ... FAIL\n
-
-            ----------------------------------------------------------------------\n
-            Ran 15 tests in 0.092s\n
-            \n
-            FAILED (failure=3)\n
-            "
-            => [string, string, ..]
-            ['test_sample1 (test.test_mini.ContainTest) ... ok', 'test_sample2 (test.test_mini.ContainTest) ... ok']
-        """
         list_success_tests = []
         for line in list_test_name:
             if not line.endswith(" FAILED") and not line.endswith(" ERROR"):

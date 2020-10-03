@@ -50,4 +50,4 @@ def execute_command_in_cmd(list_arg : list) -> list:
                 , stdout=subprocess.PIPE
                 , stderr=subprocess.PIPE)
     stderr, stdout = process.communicate()
-    return [stdout.decode("utf-8"), stderr]
+    return [stdout.decode("utf-8"), stderr.decode("utf-8")]
