@@ -17,7 +17,7 @@ from . import base_class_test as class_template
 # --------------------------------------------------------------------------------------------
 
 
-class Unittest_data(class_template.top_class_test):
+class datacls(class_template.top_class_test):
     def __init__(self, dict_config):
         self.dict_config = dict_config
 
@@ -46,26 +46,6 @@ class Unittest_data(class_template.top_class_test):
         # the output is on stderr
         last_log = str(execute_command_in_cmd(str_command)[1])[2:-1:]  # remove b' and last ' from byte type
         return last_log.split("|")
-
-    def get_execution_time(self, command : list, true_if_print_output : bool) -> float:
-        """ call "usr/bin/time" (!= "time" which is shell specific) with a format real|user|sys """
-        """
-            ['python3', 'mini.py', 'test/Image_viewer', 'test/test_mini.py'], false
-            => float
-            0:00.04
-
-            ['python3', 'mini.py', 'test/Image_viewer', 'test/test_mini.py'], true
-            => float
-            0:00.04
-
-            and print the stdout output in the console, useful for log as an example
-        """
-        str_command = shlex.split('\\time -f "%E|%U|%S" ') + command
-        output_from_execution = execute_command_in_cmd(str_command)[0]
-        if true_if_print_output:
-            print(output_from_execution)
-        timing = str(output_from_execution).split("\n")
-        return float(timing[-2].split("|")[0].split(":")[1])
 
     def true_if_error_in_tests(self, list_stats : list) -> bool:
         """

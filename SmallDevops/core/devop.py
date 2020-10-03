@@ -224,12 +224,14 @@ def devop_main(args : list) -> None:
 
     # get every path eventually needed
     directory = os.getcwd()
-    if args[-2] == "create_website":
-        if args[-1]:
-            shutil.copyfile(os.path.join(path_module, "website_file", "file.html"), os.path.join(args[-1], "file.html"))
-        else:
-            shutil.copyfile(os.path.join(path_module, "website_file", "file.html"), os.path.join(os.getcwd(), "file.html"))
-        return
+    for arg in args:
+        if args == "create_website":
+            if len(args) > 2:
+                shutil.copyfile(os.path.join(path_module, "website_file", "file.html"), os.path.join(args[-1], "file.html"))
+            else:
+                shutil.copyfile(os.path.join(path_module, "website_file", "file.html"), os.path.join(os.getcwd(), "file.html"))
+            print("file.html created")
+            return
 
     args = args[1:]
     true_if_json = True
@@ -276,7 +278,7 @@ def devop_main(args : list) -> None:
     """
     # get into the dir specified, if the option isn't used then the default (current dir) is used
     with cd(dict_config["directory"]):
-        dict_data = list_template[current_template].Unittest_data(dict_config).create_dict()
+        dict_data = list_template[current_template].datacls(dict_config).create_dict()
         if dict_config["json"]:
             create_json(dict_data, dict_config["json_output_dir"])
             print("json created")

@@ -88,10 +88,11 @@ class top_class_test(metaclass=ABCMeta):
             and print the stdout output in the console, useful for log as an example
         """
         str_command = shlex.split('\\time -f "%E|%U|%S" ') + command
-        output_from_execution = execute_command_in_cmd(str_command)[0]
+        output_from_execution = execute_command_in_cmd(str_command)
         if true_if_print_output:
-            print(output_from_execution)
-        timing = str(output_from_execution).split("\n")
+            print(output_from_execution[0])
+            print(output_from_execution[1])
+        timing = str(output_from_execution[0]).split("\n")
         return float(timing[-2].split("|")[0].split(":")[1])
 
     def create_dict(self) -> dict:

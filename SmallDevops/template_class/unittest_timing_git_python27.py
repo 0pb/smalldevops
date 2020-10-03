@@ -17,7 +17,7 @@ from . import base_class_test as class_template
 # --------------------------------------------------------------------------------------------
 
 
-class Unittest_data(class_template.top_class_test):
+class datacls(class_template.top_class_test):
     def __init__(self, dict_config):
         self.dict_config = dict_config
 

@@ -25,7 +25,7 @@ pytest -v --no-header /mnt/s/programmation/Website/Money_calculator/calc/in_fold
 """
 
 
-class Unittest_data(class_template.top_class_test):
+class datacls(class_template.top_class_test):
     def __init__(self, dict_config):
         self.dict_config = dict_config
 
@@ -130,7 +130,6 @@ class Unittest_data(class_template.top_class_test):
                     list_success_tests += [test_name_case_test[1] + " " + test_name_case_test[0] + " ".join(test_name_case_test[2:])]
                 else:
                     list_success_tests += [test_name_case_test[1] + " " + test_name_case_test[0]]
-        print(list_success_tests)
         return list_success_tests
 
     def get_output_test(self) -> str:
