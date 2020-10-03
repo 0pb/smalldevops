@@ -71,9 +71,13 @@ You cannot use this module without a git project (except if you do your own test
 
 Now every you commit the script will run automatically and update the data accordingly.
 
+### If you want to execute your script with pytest :
+
+Add `-template=pytest_timing_git` (ex : `python -m SmallDevops "python2.7 script.py"`).
+
 ### If you want to execute your script in python2.7 :
 
-Add `-template=unittest_timing_git_python27` (ex : `python -m SmallDevops "python2.7 script.py" -template=unittest_timing_git_python27`.
+Add `-template=unittest_timing_git_python27` (ex : `python -m SmallDevops "python2.7 script.py" -template=unittest_timing_git_python27`).
 
 If you want to use another version of python, either change your current python version (which the module detect with sys.version), or create your own test class and change the get_discover_command() function which run unittest.
 
