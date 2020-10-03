@@ -7,8 +7,15 @@ It consist in a python module and a webpage.
 ## **Requirements**
 
 - Linux.
+- Unittest and pytest only.
 - Python3 (only the module require it, you can still launch your own script in Python2.7 if you wish).
 - No server (flask, django etc) is required, the website is a simple html file (work offline and on any local computer without additional setup).
+
+---
+
+## **How to download the project**
+
+`pip install SmallDevops` install the SmallDevops package. You can also directly use this project by cloning it and then using `python -m SmallDevops`.
 
 ---
 
@@ -39,12 +46,11 @@ A javascript file is needed as you cannot load .json file in a local static webp
 
 ## **How to use it**
 
-- `pip install SmallDevops` install the SmallDevops package. You can also directly use this project by cloning it and then using `python -m SmallDevops`.
-- `git init` in the folder you want (or you may want to use an already existing project).
+`git init` in the folder you want (or you may want to use an already existing project).
 
 Then : 
 
-#### Basic : 
+### Basic : 
 
 - `python -m SmallDevops create_website` create "file.html" in the current folder.
 - `python -m SmallDevops "python3.6 script.py"` execute "python3.6 script.py" and create a file "output.js" in the current folder.
@@ -58,14 +64,14 @@ It mean you either need to type the command each time you commit or you can use 
 You can also ignore committing and simply run the script, however you will miss informations.
 You cannot use this module without a git project (except if you do your own test class, shown later below). However you can git init, then git commit once and never bother committing again afterward.
 
-#### Fully automatic : 
+### Fully automatic : 
 
 - `python -m SmallDevops create_website /path/where/you/want/the/website` create a "file.html" in the path given as argument.
 - create a hook post-commit or post-receive (if you put it on a git server) in your .git/hooks folder with this command : `exec python -m SmallDevops "python script.py" -dir=/path/to/script -output=/path/where/you/want/the/website`
 
 Now every you commit the script will run automatically and update the data accordingly.
 
-#### If you want to execute your script in python2.7 :
+### If you want to execute your script in python2.7 :
 
 Add `-template=unittest_timing_git_python27` (ex : `python -m SmallDevops "python2.7 script.py" -template=unittest_timing_git_python27`.
 
@@ -99,7 +105,7 @@ In the second case, use this command from now on : `python -m SmallDevops "pytho
 
 --- 
 
-## List of arguments (from devop.py) : 
+## **List of arguments (from devop.py)** : 
 
 ```
 python -m SmallDevops "[command to execute]"|create_website [list arg]
@@ -176,7 +182,7 @@ This project use : [Bootstrap](https://getbootstrap.com/), [chartjs](https://www
 
 I wish to work in devops so this project was interesting to make. It also highlighted many problems in devops (how to make sure the programs is running correctly, which data to recover, ..).
 
-If possible I will improve this project for including pytest and other test suite. I could also improve the data recovered.
+If possible I will improve this project for including other test suite. I could also improve the data recovered.
 
 ---
 

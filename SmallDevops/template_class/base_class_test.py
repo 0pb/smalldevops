@@ -39,10 +39,6 @@ class top_class_test(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_execution_time(self, command : list, true_if_print_output : bool) -> float:
-        pass
-
-    @abstractmethod
     def true_if_error_in_tests(self, list_stats : list) -> bool:
         pass
 
@@ -74,6 +70,30 @@ class top_class_test(metaclass=ABCMeta):
     def get_list_success_test(self, list_test_name : list) -> list:
         pass
 
+    @abstractmethod
+    def get_output_test(self) -> str:
+        pass
+
+    def get_execution_time(self, command : list, true_if_print_output : bool) -> float:
+        """ call "usr/bin/time" (!= "time" which is shell specific) with a format real|user|sys """
+        """
+            ['python3', 'mini.py', 'test/Image_viewer', 'test/test_mini.py'], false
+            => float
+            0:00.04
+
+            ['python3', 'mini.py', 'test/Image_viewer', 'test/test_mini.py'], true
+            => float
+            0:00.04
+
+            and print the stdout output in the console, useful for log as an example
+        """
+        str_command = shlex.split('\\time -f "%E|%U|%S" ') + command
+        output_from_execution = execute_command_in_cmd(str_command)[0]
+        if true_if_print_output:
+            print(output_from_execution)
+        timing = str(output_from_execution).split("\n")
+        return float(timing[-2].split("|")[0].split(":")[1])
+
     def create_dict(self) -> dict:
         """
             Those function are the one that need to be modified for other test (because the output is not similar)
@@ -94,7 +114,7 @@ class top_class_test(metaclass=ABCMeta):
             self.get_dict_failed_test(self.get_list_failure_test(list_test_name), list_failure_msg)
         """
 
-        output_test = execute_command_in_cmd(self.get_discover_command())[0]
+        output_test = self.get_output_test()
         try:
             list_test_name = self.get_test_names(output_test)
         except IndexError:

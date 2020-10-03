@@ -263,5 +263,8 @@ class Unittest_data(class_template.top_class_test):
         list_success_tests = []
         for line in list_test_name:
             if not line.endswith(" FAIL") and not line.endswith(" ERROR"):
-                list_success_tests += [line]
+                list_success_tests += [line.split(" ... ")[0]]
         return list_success_tests
+
+    def get_output_test(self) -> str:
+        return execute_command_in_cmd(self.get_discover_command())[0]

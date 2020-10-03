@@ -83,7 +83,6 @@ $(document).ready(function()
     */
     
     // allow the use of right and left arrow to move throught the data
-
     function function_arrow(event, data)  
     {
         current_index = parseInt(document.getElementById('current_index').textContent, 10);
@@ -247,15 +246,15 @@ function get_current_data(evt, current_chart, data) {
 function display_error_grid(current_data) {
   var dict_of_fail_class_test = {};
 
-  var list_success = [];
+  console.log(current_data["success_test"]);
+
   for (const [key, value] of Object.entries(current_data["success_test"])) {
-      list_success.push(value.split(" ").slice(0, 2).join(" "));
+      console.log(value.split(" "))
       dict_of_fail_class_test[value.split(" ")[1]] = false;
   }
 
-  var list_fail = [];
   for (const [key, value] of Object.entries(current_data["failed_test"])) {
-      list_fail.push(key);
+      console.log(key.split(" "))
       dict_of_fail_class_test[key.split(" ")[1]] = true;
   }
 
