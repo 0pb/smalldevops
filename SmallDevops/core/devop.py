@@ -225,7 +225,7 @@ def devop_main(args : list) -> None:
     # get every path eventually needed
     directory = os.getcwd()
     for arg in args:
-        if args == "create_website":
+        if arg == "create_website":
             if len(args) > 2:
                 shutil.copyfile(os.path.join(path_module, "website_file", "file.html"), os.path.join(args[-1], "file.html"))
             else:
